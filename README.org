@@ -1,0 +1,8 @@
+* USACO solutions
+These are solutions to the problems found on the [[http://train.usaco.org/usacogate][USACO training site]]. I had
+already started solving the problems, but then had to stop for a while. Wanting
+to get back into it, I decided that since I wasn't very far along I might as
+well just start from scratch, paying more attention to reading the write ups,
+etc. while completing the problems.
+
+The previous solutions can be found [[https://github.com/ermanno/USACO-solutions][here]].
