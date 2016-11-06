@@ -83,7 +83,7 @@ class combo {
 
     private static List<List<Integer>> getOptions(Combination combination) {
         int[] numbers = combination.getNumbers();
-        List<List<Integer>> combinations = new ArrayList<List<Integer>>();
+        List<List<Integer>> options = new ArrayList<List<Integer>>();
         for (int i = 0; i < 3; i++) {
             List<Integer> optionsForDial = new ArrayList<Integer>();
             optionsForDial.add(previous(previous(numbers[i])));
@@ -91,9 +91,9 @@ class combo {
             optionsForDial.add(numbers[i]);
             optionsForDial.add(next(numbers[i]));
             optionsForDial.add(next(next(numbers[i])));
-            combinations.add(optionsForDial);
+            options.add(optionsForDial);
         }
-        return combinations;
+        return options;
     }
 
     public static int previous(int number) {
