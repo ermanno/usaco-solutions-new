@@ -7,10 +7,10 @@ TASK: wormhole
 import java.io.*;
 import java.util.*;
 
-class Node {
+class WormholeNode {
     int x, y;
-    Node linkedNode;
-    Node nodeToTheRight;
+    WormholeNode linkedNode;
+    WormholeNode nodeToTheRight;
     
     @Override
     public String toString() {
@@ -25,16 +25,16 @@ class wormhole {
         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("wormhole.out")));
 
         int N = Integer.parseInt(f.readLine());
-        List<Node> nodes = new ArrayList<Node>();
-        HashMap<Integer, List<Node>> nodesToTheRightByYValue = new HashMap<Integer, List<Node>>();
+        List<WormholeNode> nodes = new ArrayList<WormholeNode>();
+        HashMap<Integer, List<WormholeNode>> nodesToTheRightByYValue = new HashMap<Integer, List<WormholeNode>>();
         for (int i = 0; i < N; i++) {
             StringTokenizer st = new StringTokenizer(f.readLine());
-            Node newNode = new Node();
+            WormholeNode newNode = new WormholeNode();
             newNode.x = Integer.parseInt(st.nextToken());
             newNode.y = Integer.parseInt(st.nextToken());
             
             if (!nodesToTheRightByYValue.containsKey(newNode.y)) {
-                List<Node> nodesOnYLine = new ArrayList<Node>();
+                List<WormholeNode> nodesOnYLine = new ArrayList<WormholeNode>();
                 nodesOnYLine.add(newNode);
                 nodesToTheRightByYValue.put(newNode.y, nodesOnYLine);
             } else {
@@ -44,24 +44,24 @@ class wormhole {
             nodes.add(newNode);
         }
         
-        for (List<Node> nodesOnYLine : nodesToTheRightByYValue.values()) {
-            nodesOnYLine.sort(new Comparator<Node>() {
+        for (List<WormholeNode> nodesOnYLine : nodesToTheRightByYValue.values()) {
+            nodesOnYLine.sort(new Comparator<WormholeNode>() {
 
                 @Override
-                public int compare(Node o1, Node o2) {
+                public int compare(WormholeNode o1, WormholeNode o2) {
                     return o1.x - o2.x;
                 }
                 
             });
             
             for (int i = 0; i < nodesOnYLine.size() - 1; i++) {
-                Node n1 = nodesOnYLine.get(i);
-                Node n2 = nodesOnYLine.get(i + 1);
+                WormholeNode n1 = nodesOnYLine.get(i);
+                WormholeNode n2 = nodesOnYLine.get(i + 1);
                 n1.nodeToTheRight = n2;
             }
         }
         
-        Node startingNode = nodes.get(0);
+        WormholeNode startingNode = nodes.get(0);
         int result = countSetOfPairingsWithCycle(nodes, startingNode);
         out.println(result);
         
@@ -74,13 +74,13 @@ class wormhole {
      * @param startingNode
      * @return
      */
-    private static int countSetOfPairingsWithCycle(List<Node> nodes, Node startingNode) {
+    private static int countSetOfPairingsWithCycle(List<WormholeNode> nodes, WormholeNode startingNode) {
         int numOfSetOfPairingsWithCycle = 0;
         
-        for (Node n : nodes) {
+        for (WormholeNode n : nodes) {
             if (n != startingNode && n.linkedNode == null) {
                 link(startingNode, n);
-                Node nextStartingNode = findNextStartingNode(nodes);           
+                WormholeNode nextStartingNode = findNextStartingNode(nodes);           
                 if (nextStartingNode == null) {
                     // we have finished
                     int result = isCycle(nodes) ? 1 : 0;
@@ -95,15 +95,15 @@ class wormhole {
         return numOfSetOfPairingsWithCycle;
     }
 
-    private static boolean isCycle(List<Node> nodes) {
-        for (Node n : nodes) {
+    private static boolean isCycle(List<WormholeNode> nodes) {
+        for (WormholeNode n : nodes) {
             if (isCycleStartingFromPos(nodes, n))
                 return true;
         }
         return false;
     }
 
-    private static boolean isCycleStartingFromPos(List<Node> nodes, Node pos) {
+    private static boolean isCycleStartingFromPos(List<WormholeNode> nodes, WormholeNode pos) {
         for (int i = 0; i < nodes.size(); i++) {
             pos = pos.linkedNode.nodeToTheRight;
             if (pos == null)
@@ -112,19 +112,19 @@ class wormhole {
         return true;
     }
 
-    private static void unlink(Node n1, Node n2) {
+    private static void unlink(WormholeNode n1, WormholeNode n2) {
         n1.linkedNode = null;
         n2.linkedNode = null;
     }
 
-    private static Node findNextStartingNode(List<Node> nodes) {
-        for (Node n : nodes)
+    private static WormholeNode findNextStartingNode(List<WormholeNode> nodes) {
+        for (WormholeNode n : nodes)
             if (n.linkedNode == null)
                 return n;
         return null;
     }
 
-    private static void link(Node n1, Node n2) {
+    private static void link(WormholeNode n1, WormholeNode n2) {
         n1.linkedNode = n2;
         n2.linkedNode = n1;
     }
