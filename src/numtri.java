@@ -8,7 +8,7 @@ TASK: numtri
 import java.io.*;
 import java.util.*;
 
-class Tree {
+class NumtriNode {
     int value;
     int sum;
 
@@ -37,12 +37,12 @@ class numtri {
         
         // Create the "root" of the "tree"
         int number = Integer.parseInt(f.readLine());
-        Tree t = new Tree();
+        NumtriNode t = new NumtriNode();
         t.value = number;
         t.sum = t.value;
         
         // Add the root to the queue
-        Queue<Tree> queue = new LinkedList<Tree>();
+        Queue<NumtriNode> queue = new LinkedList<NumtriNode>();
         
         queue.add(t);
 
@@ -50,8 +50,8 @@ class numtri {
             StringTokenizer st = new StringTokenizer(f.readLine());
 
             // As the first element in the i-th row, it is the left child of the first node of the "previous row"
-            Tree parent = queue.remove();
-            t = new Tree();
+            NumtriNode parent = queue.remove();
+            t = new NumtriNode();
             t.value = Integer.parseInt(st.nextToken());
             t.sum = parent.sum + t.value;
             
@@ -60,7 +60,7 @@ class numtri {
             // We then look ad the other nodes, barring the last: they are the right child of the current parent,
             // and the left child of the next parent, the sibling of the current parent
             for (int j = 2; j <= i - 1; j++) {
-                t = new Tree();
+                t = new NumtriNode();
                 t.value = Integer.parseInt(st.nextToken());
                 t.sum = parent.sum + t.value;
 
@@ -71,7 +71,7 @@ class numtri {
             }
             
             // The last node is the right child of the last node in the previous row
-            t = new Tree();
+            t = new NumtriNode();
             t.value = Integer.parseInt(st.nextToken());
             t.sum = parent.sum + t.value;
             
@@ -79,7 +79,7 @@ class numtri {
         }
 
         // We have left in the queue the leaves, the max is one of their sums
-        for (Tree tr : queue) {
+        for (NumtriNode tr : queue) {
             globalSum = Math.max(tr.sum, globalSum);
         }
 
