@@ -44,7 +44,7 @@ class pprime {
     }
     
     private static boolean isPrime(int number) {
-        for (int i = 3; i <= Math.sqrt(number); i++) { // I start from 3, since we won't be returning numbers divisible by 2
+        for (int i = 3; i*i <= number; i++) { // I start from 3, since we won't be returning numbers divisible by 2
             if (number % i == 0)
                 return false;
         }
