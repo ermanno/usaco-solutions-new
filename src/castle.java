@@ -7,16 +7,28 @@ TASK: castle
 import java.io.*;
 import java.util.*;
 
-class room {
+class Cell {
     int n, m;
     int value;
     boolean visited;
 }
 
+class Room {
+    private List<Cell> cells = new ArrayList<Cell>();
+    
+    void add(Cell c) {
+        cells.add(c);
+    }
+    
+    int size() {
+        return cells.size();
+    }
+}
+
 class castle {
     private static int N, M;
-    private static room[][] grid;
-    private static int numComponents;
+    private static Cell[][] grid;
+    private static List<Room> rooms = new ArrayList<Room>();
     public static final int NORTH = 2;
     public static final int SOUTH = 8;
     public static final int EAST = 4;
@@ -30,11 +42,11 @@ class castle {
         M = Integer.valueOf(st.nextToken());
         N = Integer.valueOf(st.nextToken());
 
-        grid = new room[N][M];
+        grid = new Cell[N][M];
         for (int n = 0; n < N; n++) {
             st = new StringTokenizer(f.readLine());
             for (int m = 0; m < M; m++) {
-                grid[n][m] = new room();
+                grid[n][m] = new Cell();
                 grid[n][m].value = Integer.valueOf(st.nextToken());
                 grid[n][m].n = n; grid[n][m].m = m;
             }
@@ -42,18 +54,28 @@ class castle {
     
         createComponents();
         
-        out.println(numComponents);
+        out.println(rooms.size());
+        out.println(maxRoomSize());
         
         f.close();
         out.close();
+    }
+    
+    public static int maxRoomSize() {
+        int maxSize = 0;
+        for (Room r : rooms) {
+            maxSize = Math.max(maxSize, r.size());
+        }
+        return maxSize;
     }
     
     public static void createComponents() {
         for (int n = 0; n < N; n++) {
             for (int m = 0; m < M; m++) {
                 if (!grid[n][m].visited) {
-                    visit(grid[n][m]);
-                    numComponents++;
+                    Room r = new Room();
+                    visit(r, grid[n][m]);
+                    rooms.add(r);
                 }
             }
         }
@@ -66,21 +88,22 @@ class castle {
 
     /**
      * Here I rely on the fact that I have "walls" rounding off the grid, so I cannot go outside the border.
-     * @param room
+     * @param c
      */
-    public static void visit(room room) {
-        room.visited = true;
-        if (!hasWall(room.value, NORTH) && !grid[room.n - 1][room.m].visited) {
-            visit(grid[room.n - 1][room.m]);
+    public static void visit(Room r, Cell c) {
+        c.visited = true;
+        r.add(c);
+        if (!hasWall(c.value, NORTH) && !grid[c.n - 1][c.m].visited) {
+            visit(r, grid[c.n - 1][c.m]);
         }
-        if (!hasWall(room.value, SOUTH) && !grid[room.n + 1][room.m].visited) {
-            visit(grid[room.n + 1][room.m]);
+        if (!hasWall(c.value, SOUTH) && !grid[c.n + 1][c.m].visited) {
+            visit(r, grid[c.n + 1][c.m]);
         }
-        if (!hasWall(room.value, EAST) && !grid[room.n][room.m + 1].visited) {
-            visit(grid[room.n][room.m + 1]);
+        if (!hasWall(c.value, EAST) && !grid[c.n][c.m + 1].visited) {
+            visit(r, grid[c.n][c.m + 1]);
         }
-        if (!hasWall(room.value, WEST) && !grid[room.n][room.m - 1].visited) {
-            visit(grid[room.n][room.m - 1]);
+        if (!hasWall(c.value, WEST) && !grid[c.n][c.m - 1].visited) {
+            visit(r, grid[c.n][c.m - 1]);
         }
     }
 }
