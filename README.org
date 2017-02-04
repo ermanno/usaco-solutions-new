@@ -1,8 +1,15 @@
 * USACO solutions
-These are solutions to the problems found on the [[http://train.usaco.org/usacogate][USACO training site]]. I had
-already started solving the problems, but then had to stop for a while. Wanting
-to get back into it, I decided that since I wasn't very far along I might as
-well just start from scratch, paying more attention to reading the write ups,
-etc. while completing the problems.
+These are solutions to the problems found on the [[http://train.usaco.org/usacogate][USACO training site]]. I had already started solving the problems, but then had to stop for a while. Wanting to get back into it, I decided
+that since I wasn't very far along I might as well just start from scratch, paying more attention to reading the write ups, etc. while completing the problems.
 
 The previous solutions can be found [[https://github.com/ermanno/USACO-solutions][here]].
+
+*IMPORTANT NOTE*
+
+I should stress that this probably isn't the pretties code, to put it mildly, partly because of constraints imposed by the Online Judge and the form of the problem (package level
+visibility, polluting the namespace, etc.), partly for the sake of brevity (public variables, etc.). In particular, whereas in the [[https://github.com/ermanno/USACO-solutions][other repo]] I tended to use unit tests, in this one I only
+recently started to utilize them again.
+
+In the future I want to make an effort to write a bit more cleanly while still being able to submit the solutions, at least using tests wherever possible. I even thought to re-implement
+the solutions, or possibly start anew in a separate repo, but I didn't want to leave too many different repositories with the training material scattered about, and I also think that the
+most important part remains to solve new problems and go forward (this is the goal of the training, after all).
