@@ -11,10 +11,15 @@ class Cell {
     int n, m;
     int value;
     boolean visited;
+    Room room;
 }
 
 class Room {
     private List<Cell> cells = new ArrayList<Cell>();
+    
+    public List<Cell> getCells() {
+        return cells;
+    }
     
     void add(Cell c) {
         cells.add(c);
@@ -25,10 +30,18 @@ class Room {
     }
 }
 
+class Wall {
+    Cell cell;
+    char side;
+}
+
 class castle {
     private static int N, M;
     private static Cell[][] grid;
     private static List<Room> rooms = new ArrayList<Room>();
+    private static int currentMaxSizeAfterMerge = 0;
+    private static List<Wall> candidateWalls = new ArrayList<Wall>();
+    
     public static final int NORTH = 2;
     public static final int SOUTH = 8;
     public static final int EAST = 4;
@@ -56,6 +69,7 @@ class castle {
         
         out.println(rooms.size());
         out.println(maxRoomSize());
+        out.println(currentMaxSizeAfterMerge);
         
         f.close();
         out.close();
@@ -85,25 +99,29 @@ class castle {
         int res = (encodedWalls & direction);
         return res == direction;
     }
+    
+    public static boolean isInsideGrid(int n, int m) {
+        return (n >= 0 && n < N && m >= 0 && m < M);
+    }
 
-    /**
-     * Here I rely on the fact that I have "walls" rounding off the grid, so I cannot go outside the border.
-     * @param c
-     */
+    public static void process(Room r, Cell c, int direction, int n, int m) {
+        if (!hasWall(c.value, direction) && !grid[n][m].visited) {
+            visit(r, grid[n][m]);
+        } else if (hasWall(c.value, direction) && isInsideGrid(n, m)) {
+            // add wall (could be between cells of the same room, since it just mean that the two cells
+            // are not *directly* connected, but they might be connected through another path
+            
+            // TODO think about how to represent a wall
+        }
+    }
+    
     public static void visit(Room r, Cell c) {
         c.visited = true;
         r.add(c);
-        if (!hasWall(c.value, NORTH) && !grid[c.n - 1][c.m].visited) {
-            visit(r, grid[c.n - 1][c.m]);
-        }
-        if (!hasWall(c.value, SOUTH) && !grid[c.n + 1][c.m].visited) {
-            visit(r, grid[c.n + 1][c.m]);
-        }
-        if (!hasWall(c.value, EAST) && !grid[c.n][c.m + 1].visited) {
-            visit(r, grid[c.n][c.m + 1]);
-        }
-        if (!hasWall(c.value, WEST) && !grid[c.n][c.m - 1].visited) {
-            visit(r, grid[c.n][c.m - 1]);
-        }
+        c.room = r;
+        process(r, c, NORTH, c.n - 1, c.m);
+        process(r, c, SOUTH, c.n + 1, c.m);
+        process(r, c, EAST, c.n, c.m + 1);
+        process(r, c, WEST, c.n, c.m - 1);
     }
 }
