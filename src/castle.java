@@ -4,8 +4,15 @@ LANG: JAVA
 TASK: castle
  */
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 
 class Cell {
     int n, m;
@@ -30,17 +37,47 @@ class Room {
     }
 }
 
-class Wall {
-    Cell cell;
+class Wall implements Comparable<Wall> {
+    Cell from;
+    Cell to;
     char side;
+    
+    @Override
+    public String toString() {
+        return from.n + " " + from.m + " " + side;
+    }
+
+    @Override
+    public int compareTo(Wall w) {
+        if (this.from.m < w.from.m) {
+            return +1;
+        } else if (this.from.m == w.from.m) {
+            if (this.from.n < w.from.n) {
+                return +1;
+            } else if (this.from.n == w.from.n) {
+                if (this.side == 'N' && w.side == 'E')
+                    return +1;
+                else if (this.side == w.side) {
+                    return 0; // can only happen if we compare an element with itself
+                } else {
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
 }
 
 class castle {
     private static int N, M;
     private static Cell[][] grid;
     private static List<Room> rooms = new ArrayList<Room>();
-    private static int currentMaxSizeAfterMerge = 0;
+    private static List<Wall> walls = new ArrayList<Wall>();
     private static List<Wall> candidateWalls = new ArrayList<Wall>();
+    private static int currentMaxSizeAfterMerge = 0;
     
     public static final int NORTH = 2;
     public static final int SOUTH = 8;
@@ -66,15 +103,34 @@ class castle {
         }
     
         createComponents();
+        Wall wallToRemove = removeOneWall();
         
         out.println(rooms.size());
         out.println(maxRoomSize());
         out.println(currentMaxSizeAfterMerge);
+        out.println(wallToRemove);
         
         f.close();
         out.close();
     }
     
+    private static Wall removeOneWall() {
+        for (Wall w : walls) {
+            if (w.from.room != w.to.room) {
+                int sum = w.from.room.size() + w.to.room.size();
+                if (sum == currentMaxSizeAfterMerge) {
+                    candidateWalls.add(w);
+                } else if (sum > currentMaxSizeAfterMerge) {
+                    currentMaxSizeAfterMerge = sum;
+                    candidateWalls.clear();
+                    candidateWalls.add(w);
+                }
+            }
+        }
+        Collections.sort(candidateWalls);
+        return candidateWalls.get(0);
+    }
+
     public static int maxRoomSize() {
         int maxSize = 0;
         for (Room r : rooms) {
@@ -104,14 +160,19 @@ class castle {
         return (n >= 0 && n < N && m >= 0 && m < M);
     }
 
-    public static void process(Room r, Cell c, int direction, int n, int m) {
+    public static void exploreInDirection(Room r, Cell c, int direction, int n, int m) {
         if (!hasWall(c.value, direction) && !grid[n][m].visited) {
             visit(r, grid[n][m]);
-        } else if (hasWall(c.value, direction) && isInsideGrid(n, m)) {
-            // add wall (could be between cells of the same room, since it just mean that the two cells
-            // are not *directly* connected, but they might be connected through another path
-            
-            // TODO think about how to represent a wall
+        }
+    }
+    
+    public static void addWallInDirection(Cell c, int direction, int n, int m) {
+        if (hasWall(c.value, direction) && isInsideGrid(n, m)) {
+            Wall w = new Wall();
+            w.from = c;
+            w.to = grid[n][m];
+            w.side = (direction == NORTH) ? 'N' : 'E';
+            walls.add(w);
         }
     }
     
@@ -119,9 +180,11 @@ class castle {
         c.visited = true;
         r.add(c);
         c.room = r;
-        process(r, c, NORTH, c.n - 1, c.m);
-        process(r, c, SOUTH, c.n + 1, c.m);
-        process(r, c, EAST, c.n, c.m + 1);
-        process(r, c, WEST, c.n, c.m - 1);
+        exploreInDirection(r, c, NORTH, c.n - 1, c.m);
+        addWallInDirection(c, NORTH, c.n - 1, c.m);
+        exploreInDirection(r, c, SOUTH, c.n + 1, c.m);
+        exploreInDirection(r, c, EAST, c.n, c.m + 1);
+        addWallInDirection(c, EAST, c.n, c.m + 1);
+        exploreInDirection(r, c, WEST, c.n, c.m - 1);
     }
 }
