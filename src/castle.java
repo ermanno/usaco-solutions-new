@@ -52,7 +52,7 @@ class Wall implements Comparable<Wall> {
         if (this.from.m < w.from.m) {
             return +1;
         } else if (this.from.m == w.from.m) {
-            if (this.from.n < w.from.n) {
+            if (this.from.n > w.from.n) {
                 return +1;
             } else if (this.from.n == w.from.n) {
                 if (this.side == 'N' && w.side == 'E')
@@ -79,10 +79,10 @@ class castle {
     private static List<Wall> candidateWalls = new ArrayList<Wall>();
     private static int currentMaxSizeAfterMerge = 0;
     
-    public static final int NORTH = 2;
-    public static final int SOUTH = 8;
-    public static final int EAST = 4;
     public static final int WEST = 1;
+    public static final int NORTH = 2;
+    public static final int EAST = 4;
+    public static final int SOUTH = 8;
     
     public static void main(String[] args) throws IOException {
         BufferedReader f = new BufferedReader(new FileReader("castle.in"));
@@ -104,7 +104,7 @@ class castle {
     
         createComponents();
         Wall wallToRemove = removeOneWall();
-        out.println(candidateWalls);
+        
         out.println(rooms.size());
         out.println(maxRoomSize());
         out.println(currentMaxSizeAfterMerge);
