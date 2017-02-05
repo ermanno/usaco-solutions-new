@@ -44,7 +44,7 @@ class Wall implements Comparable<Wall> {
     
     @Override
     public String toString() {
-        return from.n + " " + from.m + " " + side;
+        return (from.n + 1) + " " + (from.m + 1) + " " + side;
     }
 
     @Override
@@ -104,7 +104,7 @@ class castle {
     
         createComponents();
         Wall wallToRemove = removeOneWall();
-        
+        out.println(candidateWalls);
         out.println(rooms.size());
         out.println(maxRoomSize());
         out.println(currentMaxSizeAfterMerge);
@@ -128,7 +128,7 @@ class castle {
             }
         }
         Collections.sort(candidateWalls);
-        return candidateWalls.get(0);
+        return candidateWalls.get(candidateWalls.size() - 1);
     }
 
     public static int maxRoomSize() {
