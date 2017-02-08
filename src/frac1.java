@@ -10,6 +10,14 @@ import java.util.*;
 class Fraction implements Comparable<Fraction> {
     private int numerator;
     private int denominator;
+    
+    public int getNumerator() {
+        return numerator;
+    }
+    
+    public int getDenominator() {
+        return denominator;
+    }
 
     Fraction(int numerator, int denominator) {
         this.numerator = numerator;
@@ -27,8 +35,14 @@ class Fraction implements Comparable<Fraction> {
         // a/b -> ad/bd
         // c/d -> cb/bd
         Integer ad = this.numerator * fraction.denominator;
-        Integer cb = fraction.numerator * fraction.denominator;
+        Integer cb = fraction.numerator * this.denominator;
         return ad.compareTo(cb);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        Fraction fraction = (Fraction) obj;
+        return this.denominator == fraction.denominator && this.numerator == fraction.numerator;
     }
 }
 
