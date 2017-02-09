@@ -5,23 +5,24 @@ TASK: frac1
  */
 
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 
 class Fraction implements Comparable<Fraction> {
-    private int numerator;
-    private int denominator;
+    private BigInteger numerator;
+    private BigInteger denominator;
     
-    public int getNumerator() {
+    public BigInteger getNumerator() {
         return numerator;
     }
     
-    public int getDenominator() {
+    public BigInteger getDenominator() {
         return denominator;
     }
 
     Fraction(int numerator, int denominator) {
-        this.numerator = numerator;
-        this.denominator = denominator;
+        this.numerator = BigInteger.valueOf(numerator);
+        this.denominator = BigInteger.valueOf(denominator);
     }
 
     @Override
@@ -34,9 +35,13 @@ class Fraction implements Comparable<Fraction> {
         // Consider a/b and c/d:
         // a/b -> ad/bd
         // c/d -> cb/bd
-        Integer ad = this.numerator * fraction.denominator;
-        Integer cb = fraction.numerator * this.denominator;
+        BigInteger ad = this.numerator.multiply(fraction.denominator);
+        BigInteger cb = fraction.numerator.multiply(this.denominator);
         return ad.compareTo(cb);
+    }
+    
+    public boolean isReduced() {
+        return this.numerator.gcd(this.denominator).equals(BigInteger.ONE);
     }
     
     @Override
@@ -53,12 +58,14 @@ class frac1 {
 
         int N = Integer.parseInt(f.readLine());
         List<Fraction> fractions = new ArrayList<Fraction>();
-        fractions.add(new Fraction(0, 1));
-        fractions.add(new Fraction(1, 1));
-
-        int[] primes = new int[N];
-
         
+        for (int denominator = 1; denominator <= N; denominator++) {
+            for (int numerator = 0; numerator <= denominator; numerator++) {
+                Fraction fraction = new Fraction(numerator, denominator);
+                if (fraction.isReduced())
+                    fractions.add(fraction);
+            }
+        }
         
         Collections.sort(fractions);
         for (Fraction fraction : fractions) {
