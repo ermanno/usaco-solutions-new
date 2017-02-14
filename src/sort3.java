@@ -33,6 +33,15 @@ class sort3 {
             numbers.add(Integer.parseInt(f.readLine()));
         }
         
+        sort(N);
+        
+        out.println(swapCount);
+        
+        f.close();
+        out.close();
+    }
+
+    public static void sort(int N) {
         int posToSwapTo = 0;
         for (int i = 1; i < N; i++) {
             if (numbers.get(i - 1) < numbers.get(i)) {
@@ -42,11 +51,6 @@ class sort3 {
                 posToSwapTo = i;
             }
         }
-        
-        out.println(swapCount);
-        
-        f.close();
-        out.close();
     }
     
     public static void swap(int from, int to) {
