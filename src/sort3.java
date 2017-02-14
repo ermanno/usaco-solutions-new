@@ -44,10 +44,10 @@ class sort3 {
     public static void sort(int N) {
         int posToSwapTo = 0;
         for (int i = 1; i < N; i++) {
-            if (numbers.get(i - 1) < numbers.get(i)) {
+            if (numbers.get(i - 1) > numbers.get(i)) {
                 swap(i, posToSwapTo);
                 posToSwapTo++;
-            } else if (numbers.get(i - 1) > numbers.get(i)) {
+            } else if (numbers.get(i - 1) < numbers.get(i)) {
                 posToSwapTo = i;
             }
         }
