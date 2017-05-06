@@ -63,11 +63,9 @@ class hamming {
     private static int calculateHammingDistance(int a, int b, int bitsInCodeword) {
         int difference = 0;
         for (int i = 0; i < bitsInCodeword; i++) {
-            if ((a&1) != (b&1)) {
+            if (((1 << i) & a) != ((1 << i) & b)) {
                 difference++;
             }
-            a >>= 1;
-            b >>= 1;
         }
         return difference;
     }
